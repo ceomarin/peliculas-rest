@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.ceomarin.peliculasrest.exception.ActorNotFoundException;
+import cl.ceomarin.peliculasrest.exception.PeliculaNotFoundException;
 import cl.ceomarin.peliculasrest.models.Actor;
 import cl.ceomarin.peliculasrest.models.Pelicula;
 import cl.ceomarin.peliculasrest.services.ActorService;
@@ -76,7 +77,7 @@ public class MainRestController {
 	public Pelicula mostrarPeliculaById(@PathVariable Long id){
 		Pelicula pelicula = peliculaServicio.peliculaPorId(id);
 		if(pelicula == null) {
-			throw new ActorNotFoundException(id);
+			throw new PeliculaNotFoundException(id);
 		} else {
 			return pelicula;
 		}
@@ -96,7 +97,7 @@ public class MainRestController {
 	public void eliminarPelicula(@PathVariable Long id) {
 		Pelicula pelicula = peliculaServicio.peliculaPorId(id);
 		if(pelicula == null) {
-			//throw new ActorNotFoundException(id);
+			throw new PeliculaNotFoundException(id);
 		} else {
 			peliculaServicio.aliminarPelicula(pelicula);		}
 		
