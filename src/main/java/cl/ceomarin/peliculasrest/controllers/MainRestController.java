@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.ceomarin.peliculasrest.exception.ActorNotFoundException;
+import cl.ceomarin.peliculasrest.exception.CalificacionNotFoundException;
 import cl.ceomarin.peliculasrest.exception.PeliculaNotFoundException;
 import cl.ceomarin.peliculasrest.models.Actor;
+import cl.ceomarin.peliculasrest.models.Calificacion;
 import cl.ceomarin.peliculasrest.models.Pelicula;
 import cl.ceomarin.peliculasrest.services.ActorService;
+import cl.ceomarin.peliculasrest.services.CalificacionService;
 import cl.ceomarin.peliculasrest.services.PeliculaService;
 
 @RestController
@@ -103,4 +106,32 @@ public class MainRestController {
 		
 	}
 	
+	//Calificaciones
+	@Autowired
+	private CalificacionService calificacionServicio;
+	
+	@GetMapping("/calificaciones")
+	public List<Calificacion> listarCalificacion(){
+		return calificacionServicio.listar();
+	}
+	
+	@GetMapping("/calificaciones/{id}")
+	public Calificacion mostrarCalificacionById(@PathVariable Long id){
+		Calificacion calificacion = calificacionServicio.calificacionPorId(id);
+		if(calificacion == null) {
+			throw new CalificacionNotFoundException(id);
+		} else {
+			return calificacion;
+		}
+	}
+	
+	@PostMapping("/peliculas/{id}/calificaciones")
+	public Calificacion crearCalificacion(@PathVariable Long id,@RequestBody Calificacion calificacion){
+		Pelicula pelicula = peliculaServicio.peliculaPorId(id);
+		if(pelicula != null) {			
+			return calificacionServicio.crear(calificacion.getNota(),calificacion.getComentario(),pelicula);
+		} else {
+			throw new PeliculaNotFoundException(id);
+		}
+	}
 }
